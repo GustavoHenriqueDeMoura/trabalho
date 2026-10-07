@@ -1,7 +1,7 @@
 import os
 from datetime import datetime
 from typing import List, Optional
- 
+
 from dotenv import load_dotenv
 from sqlalchemy import create_engine, select, String, Integer, DateTime, ForeignKey
 from sqlalchemy.exc import SQLAlchemyError
@@ -105,7 +105,7 @@ def cadastrar_sessao(db: Session):
     db.commit()
     print(f"Sessão criada com id {sessao.id}.")
  
- 
+
 def cadastrar_player(db: Session):
     player = Player(
         nome=input("Nome: "),
@@ -160,6 +160,15 @@ def excluir_player(db: Session):
     db.delete(player)
     db.commit()
     print("Player excluído.")
+
+def excluir_sessao(db: Session):
+    sessao = db.get(Sessao, ler_int("ID Campanha: "))
+    if sessao is None:
+        print("Campanha não encontrado.")
+        return
+    db.delete(sessao)
+    db.commit()
+    print("Campanha ecluida excluído.")
  
  
 # ---------- Menu principal ----------
@@ -170,6 +179,7 @@ OPCOES = {
     "4": ("Listar players", listar_players),
     "5": ("Colocar player em uma sessão", colocar_player_na_sessao),
     "6": ("Excluir player", excluir_player),
+    "7": ("Excluir campanha", excluir_sessao),
 }
  
  
@@ -181,14 +191,14 @@ def menu():
             print(f"\n=== MENU (banco atual: {nome_banco}) ===")
             for chave, (texto, _) in OPCOES.items():
                 print(f"{chave} - {texto}")
-            print("7 - Trocar de banco de dados")
+            print("8 - Trocar de banco de dados")
             print("0 - Sair")
  
             escolha = input("Escolha: ").strip()
             if escolha == "0":
                 print("Até mais!")
                 break
-            if escolha == "7":
+            if escolha == "8":
                 nova = conectar(permitir_cancelar=True)
                 if nova is not None:
                     db.close()
